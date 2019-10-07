@@ -1,0 +1,66 @@
+<div class="col-sm-12 bar-button">
+  <button type="button" name="button" ><i class="fa fa-bars"></i></button>
+</div>
+<div class="col-sm-3 sidebar">
+  <h4 class="text-center" style="font-family: 'Literata', serif;">PlayList Manager</h4>
+  <ul>
+    <li id="browse-li"><a href="/browse"><i class="material-icons icons"> search</i><span>Browse</span></a></li>
+    <!-- <li id="summary-li"><a href="/summary"><i class="fa fa-sticky-note-o icons"></i><span>Short Introduction</span></a></li>
+    <li id="educationalinfo-li"><a href="/educationalinfo"><i class="fa fa-graduation-cap icons"></i><span>Education</span></a></li>
+    <li id="experienceinfo-li"><a href="/experienceinfo"><i class="fa fa-briefcase icons"></i><span>Experience</span></a></li>
+    <li id="skills-li"><a href="/skills"><i class="fa fa-star-o icons"></i>Skills</a></li>
+    <li id="projects-li"><a href="/projects"><i class="fa fa-wrench icons"></i><span>Projects</span></a></li> -->
+    <li id="history-li"><a href="/history"><i class="material-icons icons">history</i>History</a></li>
+    <li id="playlist-li"><a href=""><i class="material-icons icons">playlist_play</i>Playlists</a></li>
+    <li id="createplaylist-li"><a href="" data-toggle="modal" data-target="#create-playlist-modal" ><i class="material-icons icons">add_circle_outline</i>Create Playlist</a></li>
+    <% for(i=0;i<obj.playlist.length;i++) { %>
+        <li><a href="/playlist/<%= obj.playlist[i]._id %>"><%= obj.playlist[i].name %></a></li>
+    <% } %>
+    <li><a href="/logout"><i class=""></i><span>Logout</span></a></li>
+  </ul>
+</div>
+
+<div class="modal fade" id="create-playlist-modal" role="dialog">
+    <div class="modal-dialog">
+
+      <div class="modal-content">
+        <!-- <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div> -->
+        <div class="modal-body">
+          <input type="text" class="form-control" id="create-playlist-name" placeholder="Enter PlayList Name">
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="create-playlist-button" class="btn btn-default" data-dismiss="modal">Create Playlist</button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+
+<div class="modal fade" id="add-song-playlist-modal" role="dialog">
+    <div class="modal-dialog">
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1>Add In</h1>
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+        </div>
+        <div class="modal-body">
+          <div class="row">
+              <% for(i=0;i<obj.playlist.length;i++) { %>
+                  <div class="col-sm-3 rounded-circle">
+                    <button onclick="addToPlayList('<%= obj.playlist[i]._id %>')">
+                        <%= obj.playlist[i].name %>
+                    </button>
+                  </div>
+              <% } %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="create-playlist-button" class="btn btn-default" data-dismiss="modal">Create Playlist</button>
+        </div>
+      </div>
+      
+    </div>
+</div>

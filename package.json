@@ -1,0 +1,16 @@
+{
+  "name": "media-player",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express-session": "^1.16.2",
+    "session": "^0.1.0"
+  }
+}
