@@ -53,7 +53,8 @@
     password : String,
     email : String,
     profilepic : String,
-    playlist : [{ type: schema.Types.ObjectId, ref: 'playlists' }],
+    playlist : [ { type: schema.Types.ObjectId, ref: 'playlists' } ],
+    history : [ { type : schema.Types.ObjectId, ref : 'songs' } ],
   })
 
   var songs = mongoose.model('songs',songsSchema);
@@ -87,8 +88,13 @@
             if(error)
             throw error;
             else {
-              console.log(result);
+              console.log('-' + result + '-');
               req.session.data = result;
+              req.session.playlist = [];
+              for(let i=0 ; i < result.playlist.length ; i++)
+              {
+                req.session.playlist.push(result.playlist[i]._id);
+              }
               res.redirect('/browse');
             }
           })
@@ -148,10 +154,52 @@
     //     res.render('category',{ obj : req.session.data });
     //   }
     // })
-    
   })
 
-  app.post('/getSongs',function(req,res)
+  app.get('/playlist/:pro',checkLogin,function(req,res) {
+    playlist.findOne({ "_id" : req.params.pro },function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        res.render('playlist',{ obj : req.session.data , playlist : result });
+      }
+    })
+  })
+
+  app.post('/adduser',function(req,res)
+  {
+    console.log('---' + req.body + '----');
+    users.create(req.body,function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        res.redirect('/login');
+      }
+    })
+  })
+
+  app.post('/finduser',function(req,res)
+  {
+    users.findOne({ "username" : req.body.username },function(error,result)
+    {
+      if(error)
+      {
+        throw error;
+      }
+      else if(result)
+      {
+          res.send('1')
+      }
+      else 
+      {
+          res.send('0');
+      }
+    })
+  })
+
+  app.post('/getSongs',function(req,res)          // server side pagination
   {
     console.log(req.body.category);
     songs.find( { "category" : req.body.category },function(error,result)
@@ -166,17 +214,6 @@
     })
   })
 
-  app.get('/playlist/:pro',checkLogin,function(req,res) {
-    playlist.findOne({ "_id" : req.params.pro },function(error,result)
-    {
-      if(error)
-      throw error;
-      else {
-        res.render('playlist',{ obj : req.session.data , playlist : result });
-      }
-    })
-  })
-
   app.post('/createplaylist',function(req,res)
   {
     console.log(req.body);
@@ -185,13 +222,14 @@
       if(error)
       throw error;
       else {
-        // console.log(result);
+        // console.log('11111' + result + '1111111');
         users.updateOne( { "_id" : req.session.data._id } , { $push : { playlist : result._id } },function(error,output)
           {
             if(error)
             throw error;
             else {
-              req.session.data.playlist.push(result._id);
+              req.session.data.playlist.push(result);
+              req.session.playlist.push(result._id);
               console.log(result);
               res.end();
             }
@@ -200,7 +238,7 @@
     })
   })
 
-  app.post('/addSongtoPlayList',function(req,res)
+  app.post('/addSongtoPlayList',function(req,res)        //  change
   {
     console.log(req.body);
     playlist.updateOne( { "_id" : req.body.playlistid } , { $push : { songs : req.body.songid } },function(error,result)
@@ -214,14 +252,61 @@
     })
   })
 
+  app.post('/removeSongfromPlayList',function(req,res)     //  change
+  {
+    console.log(req.body);
+    playlist.updateOne( { "_id" : req.body.playlist_id } , { $pull : { songs : { $in : [req.body.songid ] }} },function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        console.log('removed');
+        res.end();
+      }
+    })
+  })
+
   app.post('/getPlaylistSongs',function(req,res)
   {
-    
+    let query = [{ path : 'songs' , select : { 'songname' : 1 , 'singer' : 1  , 'category' : 1 , 'image' : 1 } }];
+    playlist.findOne({ "_id" : req.body.playlist_id }).populate( query ).exec(function(error,result) {
+      if(error)
+      throw error;
+      else {
+        console.log("----here----");
+        console.log(result);
+        console.log("----here----");
+        // req.session.data = result;
+        res.send(result);
+      }
+    })
   })
+
+  app.post('/getrightPlaylist',function(req,res)
+  {
+    // let findObj = { songs : { $nin : [ req.body.songid ]  } }
+    let findObj = { $and : [ { "_id" : { $in : req.session.playlist }  }, { songs : { $nin : [ req.body.songid ]  } }] };
+    playlist.find( findObj , { _id : 1 } )
+    .then(data => {
+      res.send(data);
+    })
+    .catch(error => {
+      res.send(error);
+    })
+  })
+    // {
+    //   if(error)
+    //   throw error;
+    //   else {
+    //     // console.log(result);
+    //     res.send(result);
+    //   }
+    // })
 
   app.get('/logout',checkLogin,function(req,res)
   {
     req.session.isLogin = 0;
+    req.session.playlist = [];
     res.redirect('/login');
   })
 
