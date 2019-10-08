@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="/sidebar.css">
     <title>Playlist Manager</title>
     <style>
         body {
@@ -23,6 +23,7 @@
   </head>
   <body>
       <div class="row" style="max-width:100%; margin:0;">
+        <% include partials/header.ejs %>
         <% include partials/sidebar.ejs %>
         <div class="col-sm-9 rightdiv">
           <div class="container" style="margin-top:60px;">
@@ -39,46 +40,10 @@
               <div class="col-sm-3">
                   <a href="/category/romantic">Romantic</a>
               </div>
-                <!-- <div class="row" style="padding:0;">
-                    <div class="col-sm-12">
-                      <br>
-                      <br>
-                      <br>
-                    </div>
-                </div>
-              
-                <center>
-                  <button id="prev" type="button" name="button">Prev</button>
-                  <button id="play" type="button" name="button">Play</button>
-                  <button id="next" type="button" name="button">Next</button>
-                </center>
-                <br>
-                <br>
-                <br>
-              
-                <div class="row" style="padding:0;">
-                    <div class="col-sm-4">
-                      <p>Your Songs</p>
-                      <div id="viewmySongs">
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                      <p>Currently Playing</p>
-                      <p id="songname"></p>
-                    </div>
-                    <div class="col-sm-4">
-                      <p>Avialable Songs</p>
-                      <div id="viewallSongs">
-                      </div>
-                    </div>
-                </div>
-                <audio controls>
-                  <source src="07 Stay a Little Longer (Anushka Shahaney) 320Kbps.mp3" type="audio/mpeg">
-                    <source src="07 Stay a Little Longer (Anushka Shahaney) 320Kbps.mp3" type="audio/mpeg">
-                </audio> -->
             </div>
           </div>
-        </div>
+        </div><% include partials/footer.ejs %>
+
     </div>
 
   </body>
