@@ -1,4 +1,5 @@
 
+  var fs = require('fs');
   var express = require('express')
   var path = require('path')
   var app = express()
@@ -47,7 +48,6 @@
     songs : [{ type: schema.Types.ObjectId, ref: 'songs' }]
   })
   
-
   var userSchema = new mongoose.Schema({
     username : String,
     password : String,
@@ -294,6 +294,57 @@
       res.send(error);
     })
   })
+
+  app.post('/renamePlaylist',function(req,res)
+  {
+    playlist.updateOne({ "_id" : req.body.playlist_id },{ $set : { name : req.body.newname } },function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        console.log('Playlist Renamed');
+        updatePLaylistName(req,req.body.playlist_id,req.body.newname);
+        res.end();
+      }
+    })
+  })
+
+  app.post('/removePlayList',function(req,res)
+  {
+    playlist.deleteOne({ "_id" : req.body.playlist_id },function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        users.updateOne({ "_id" : req.session.data._id }, { $pull : { playlist : { $in : [ req.body.playlist_id ]  } } },function(error,result)
+        {
+          removePlayListFromSession(req.body.playlist_id,req);
+          console.log("platlist deleted");
+          res.redirect('/browse');
+        })
+      }
+    })
+  })
+
+  app.post('/getSong',function(req,res)
+  {
+    let { songname } =  req.body;
+    let myReadStream = fs.createReadStream(__dirname + 'public/' + songname + '.mp3' , 'mp3' );
+    myReadStream.pipe(res);
+  })
+
+  function removePlayListFromSession(id,req)
+  {
+    for(let i=0;i<req.session.playlist.length;i++)
+    {
+      if(id == req.session.playlist[i])
+      {
+        req.session.playlist.splice(i,1);
+        req.session.data.playlist.splice(i,1);
+        return;
+      }
+    }
+  }
     // {
     //   if(error)
     //   throw error;
@@ -309,6 +360,18 @@
     req.session.playlist = [];
     res.redirect('/login');
   })
+
+  function updatePLaylistName(req,id,newname)
+  {
+    for(let i=0;i<req.session.playlist.length;i++)
+    {
+      if(id == req.session.playlist[i])
+      {
+        req.session.data.playlist[i].name = newname;
+        return;
+      }
+    }
+  }
 
   function checkLogin(req,res,next)
   {
@@ -362,23 +425,32 @@
   //     })
   // })
 
-  // app.post('/addSong',function(req,res)
-  // {
-  //     users.updateOne({ "_id" : "5d59ad5fcc34be5465a30a3f" },
-  //     {
-  //         $push : {
-  //             playlist : {
-  //             "songname" : req.body.songname,
-  //             "photoname" : req.body.photoname,
-  //           }
-  //         }
-  //     },function(error,result)
-  //     {
-  //       if(error)
-  //       throw error;
-  //       else {
-  //         console.log(result);
-  //         res.send("DONE bro")
-  //       }
-  //     })
+  app.get('/addSong',checkLogin,function(req,res)
+  {
+      res.render('addSongPage');
+  })
+
+  app.post('/addSong',function(req,res)
+  {
+    console.log(req.body);
+    songs.create(req.body,function(error,result)
+    {
+      if(error)
+      throw error;
+      else {
+        res.redirect('/addSong');
+      }
+    })
+  })
+
+
+  // var http = require('http');
+  // var fs = require('fs');
+
+  // var myReadStream = fs.createReadStream(__dirname + '/big.txt','utf8');
+
+  // myReadStream.on('data',function(chunk) {
+  //   console.log('---------------------------------------------------------------------new chunk----------------------------------------------------------------');
+  //   console.log(chunk);
+    
   // })

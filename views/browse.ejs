@@ -19,6 +19,21 @@
           background-color: #0C75FA;
         }
 
+        .image-cropper {
+          width: 100px;
+          height: 100px;
+          position: relative;
+          overflow: hidden;
+          border-radius: 50%;
+      }
+      .profile-pic {
+        display: inline;
+        margin: 0 auto;
+        margin-left: -25%;
+        height: 100%;
+        width: auto;
+      }
+
     </style>
   </head>
   <body>
@@ -26,20 +41,55 @@
         <% include partials/header.ejs %>
         <% include partials/sidebar.ejs %>
         <div class="col-sm-9 rightdiv">
-          <div class="container" style="margin-top:60px;">
-            <div class="row">
-              <div class="col-sm-3">
-                <a href="/category/pop">Pop</a>
+          <div class="container">
+            <div class="row" style="margin-top: 20px;">
+              <div class="col-sm-3 category-divs">
+                <a href="/category/pop">
+                  <div class="image-cropper">
+                      <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                  </div>      
+                </a>
+                PoP
               </div>
               <div class="col-sm-3">
-                  <a href="/category/relaxing">Relaxing</a>
+                  <a href="/category/romantic">
+                    <div class="image-cropper">
+                        <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                    </div>      
+                  </a>
+                  Romantic
               </div>
               <div class="col-sm-3">
-                  <a href="/category/workout">Workout</a>
+                  <a href="/category/party">
+                    <div class="image-cropper">
+                        <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                    </div>      
+                  </a>
+                  Party
               </div>
               <div class="col-sm-3">
-                  <a href="/category/romantic">Romantic</a>
-              </div>
+                  <a href="/category/relaxing">
+                    <div class="image-cropper">
+                        <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                    </div>      
+                  </a>
+                  Relaxing
+                </div>
+                <div class="col-sm-3">
+                    <a href="/category/workout">
+                      <div class="image-cropper">
+                          <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                      </div>      
+                    </a>
+                    Workout
+                </div>
+                <div class="col-sm-3">
+                      <a href="/category/pop">
+                        <div class="image-cropper">
+                            <img src="/pop.jpg" alt="avatar" class="profile-pic">
+                        </div>      
+                      </a>
+                </div>
             </div>
           </div>
         </div><% include partials/footer.ejs %>
